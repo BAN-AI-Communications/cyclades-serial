@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <dlfcn.h>
+#include <stdarg.h>
 #include <sys/time.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -21,13 +22,17 @@
 #include <signal.h>
 #include <syslog.h>
 #include <errno.h>
+#include <sys/ioctl.h>
 
 #define MAX_PORTS 32
+
+typedef unsigned long int request_t;
 
 static void *libc = NULL;
 static int (*real_tcsetattr) (int fd, int optional_actions,
 			      const struct termios * termios_p) = NULL;
 static int (*real_tcsendbreak) (int fd, int duration);
+static int (*real_ioctl) (int, request_t, void *);
 static char *cyclades_devices[MAX_PORTS];
 static int num_devices;
 static int socket_fd = -1;
@@ -47,6 +52,7 @@ libcsc_init()
     real_tcsetattr =
 	(int (*)(int, int, const struct termios *)) dlsym(libc, "tcsetattr");
     real_tcsendbreak = (int (*)(int, int)) dlsym(libc, "tcsendbreak");
+    real_ioctl = (int (*)(int, request_t, void *)) dlsym(libc, "ioctl");
 
     num_devices = 0;
     cyclades_env = getenv("CYCLADES_DEVICES");
@@ -397,4 +403,115 @@ tcsendbreak(int fd, int duration)
     else
 	errno = 0;
     return ret;
+}
+
+int
+ioctl(int fd, request_t request, ...)
+{
+    va_list args;
+    void *argp;
+    int *arg_intp;
+    int a_fail = 0;
+    int val;
+    int ind = get_device_ind(fd);
+
+    va_start(args, request);
+    argp = va_arg(args, void *);
+    va_end(args);
+
+    if (ind == -1)
+	return real_ioctl(fd, request, argp);
+
+    arg_intp = argp;
+
+    /* Note: Try to keep the order as in the Linux man page
+       tty_ioctl */
+    switch (request) {
+    case TCGETS:
+	return tcgetattr(fd, argp);
+	break;
+    case TCSETS:
+	return tcsetattr(fd, TCSANOW, argp);
+	break;
+    case TCSETSW:
+	return tcsetattr(fd, TCSADRAIN, argp);
+	break;
+    case TCSETSF:
+	return tcsetattr(fd, TCSAFLUSH, argp);
+	break;
+    case TCSBRK:
+	return tcsendbreak(fd, *arg_intp);
+	break;
+    case TIOCMGET:
+	/* FIXME: Implement. To be able to get the modem bits, we need
+	   to make the control connection bidirectional */
+	fprintf(stderr, "libcyclades-ser-cli: TIOCMGET not implemented\n");
+	errno = ENOSYS;
+	return -1;
+
+	/* TIOCM_DTR */
+	/* TIOCM_RTS */
+	/* TIOCM_LE / TIOCM_DSR */
+	/* TIOCM_ST */
+	/* TIOCM_SR */
+	/* TIOCM_CTS */
+	/* TIOCM_CAR / TIOCM_CD */
+	/* TIOCM_RNG / TIOCM_RI */
+	break;
+    case TIOCMSET:
+	/* set the status of modem bits */
+	if (*arg_intp & TIOCM_DTR)
+	    val = COM_DTR_ON;
+	else
+	    val = COM_DTR_OFF;
+	if (send_data(ind, eSET_CONTROL, val, 0)) {
+	    a_fail++;
+	}
+	if (*arg_intp & TIOCM_RTS)
+	    val = COM_RTS_ON;
+	else
+	    val = COM_RTS_OFF;
+	if (send_data(ind, eSET_CONTROL, val, 0)) {
+	    a_fail++;
+	}
+	break;
+    case TIOCMBIC:
+	/* clear the indicated modem bits */
+	if (*arg_intp & TIOCM_DTR) {
+	    if (send_data(ind, eSET_CONTROL, COM_DTR_OFF, 0)) {
+		a_fail++;
+	    }
+	}
+	if (*arg_intp & TIOCM_RTS) {
+	    if (send_data(ind, eSET_CONTROL, COM_RTS_OFF, 0)) {
+		a_fail++;
+	    }
+	}
+	break;
+    case TIOCMBIS:
+	/* set the indicated modem bits */
+	if (*arg_intp & TIOCM_DTR) {
+	    if (send_data(ind, eSET_CONTROL, COM_DTR_ON, 0)) {
+		a_fail++;
+	    }
+	}
+	if (*arg_intp & TIOCM_RTS) {
+	    if (send_data(ind, eSET_CONTROL, COM_RTS_ON, 0)) {
+		a_fail++;
+	    }
+	}
+	break;
+    default:
+	return real_ioctl(fd, request, argp);
+	break;
+    }
+
+    if (a_fail) {
+	errno = EINVAL;
+	return -1;
+    }
+
+    errno = 0;
+    return 0;
+
 }
