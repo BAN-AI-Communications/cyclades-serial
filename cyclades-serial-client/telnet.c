@@ -100,6 +100,9 @@ tel_init(int netsize, struct buffer *ibp, struct buffer *obp)
 
 	sysdelay (SERVER_DELAY);	/* Wait telnet startup */
 
+	SET_I_WANT_TO_SUPPORT(NVT_BINARY);
+	SET_HE_MAY_SUPPORT(NVT_BINARY);
+
 	SET_I_WANT_TO_SUPPORT(NVT_COM_PORT_OPTION);
 	SEND_WILL(NVT_COM_PORT_OPTION);
 	SET_I_SENT_IT(NVT_COM_PORT_OPTION);
