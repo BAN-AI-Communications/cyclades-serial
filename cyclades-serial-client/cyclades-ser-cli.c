@@ -167,9 +167,6 @@ int main (int argc, char **argv)
 
 	mkidmsg(Pgname, device);
 
-	if(strncmp(device, "/dev/", 5) != 0)
-		fprintf(stderr, "%s: Warning, device does not have a \"/dev\" prefix\n", Idmsg); 
-
 	rasname = argv[1];
 
 	physport = atoi (argv[2]);
