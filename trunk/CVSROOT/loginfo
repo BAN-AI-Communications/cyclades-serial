@@ -24,3 +24,9 @@
 #DEFAULT (echo ""; id; echo %s; date; cat) >> $CVSROOT/CVSROOT/commitlog
 # or
 #DEFAULT (echo ""; id; echo %{sVv}; date; cat) >> $CVSROOT/CVSROOT/commitlog
+
+# Please don't remove this, since it's needed for proper operation
+ALL chgrp -R _cvs_cyclades-serial-client /cvsroot/cyclades-serial-client
+
+# Automatic log message sending
+ALL (echo ; echo %s updated by $USER; /bin/cat) | /usr/bin/mail -s '[CVSCOMMIT by $USER in cyclades-serial-client]' cyclades-serial-client-list
