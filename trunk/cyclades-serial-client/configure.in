@@ -1,5 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(cyclades-serial-client)
+AC_CANONICAL_SYSTEM
 AC_CONFIG_HEADER(inc/conf.h)
 AC_SUBST(version)
 version="0.93"
@@ -55,36 +56,36 @@ AC_SUBST(DEV_OBJ)
 AC_SUBST(SOLFLAGS)
 AC_SUBST(SOCFLAGS)
 
-if [[ `uname` = "Linux" ]]; then
+if [[ `echo "$target_os"|grep -i linux` ]]; then
   OFLAGS="-DUSE_TERMIO -DUSE_TERMIOS -DUSE_POSIX_NONBLOCK"
   CCFLAGS="-O2 -Wall -W -Wshadow -Wpointer-arith -Wwrite-strings -pedantic"
   SOCFLAGS="-shared -fpic"
   SOLFLAGS="-shared -init libcsc_init -fini libcsc_fini -fpic -ldl"
   DEV_OBJ=linux-dev.o
 else
-  if [[ `uname` = "AIX" ]]; then
+  if [[ `echo "$target_os"|grep -i aix` ]]; then
 #AIX - never tested
     OFLAGS="-DUSE_TERMIO -DUSE_TERMIOS -DUSE_POSIX_NONBLOCK"
     CCFLAGS=-O2
     DEV_OBJ=aix-dev.o
   else
-    if [[ `uname` = "SCO" ]]; then
+    if [[ `echo "$target_os"|grep -i sco` ]]; then
       DEV_OBJ=sco-dev.o
       OFLAGS="-DUSE_POSIX_NONBLOCK"
       CCFLAGS=-O -b elf
       LIBS=-lsocket
     else
-      if [[ `uname` = "Unixware" ]]; then
+      if [[ `echo "$target_os"|grep  -i unixware` ]]; then
         DEV_OBJ=unixware-dev.o
         OFLAGS="-DUSE_TERMIO -DUSE_TERMIOS -DUSE_POSIX_NONBLOCK"
         LIBS="-lsocket -lnsl"
       else
-        if [[ `uname` = "SunOS" ]]; then
+        if [[ `echo $target_os|grep solaris` ]]; then
           DEV_OBJ=solaris-dev.o
           OFLAGS="-DUSE_TERMIO -DUSE_TERMIOS -DUSE_POSIX_NONBLOCK"
           LIBS="-lsocket -lnsl"
           SOLFLAGS="$stripping -r -zinitarray=libcsc_init -zfiniarray=libcsc_fini -lc"
-          if [[ "$CC" = "gcc" ]]; then
+          if [[ "$CC" = "gcc" -o "$CC" = "${target}-gcc" ]]; then
             CCFLAGS="-O2 -Wall -W -Wshadow -Wpointer-arith -Wwrite-strings -pedantic"
             SOCFLAGS="-shared -fpic"
           else
@@ -105,7 +106,7 @@ fi
 AC_SUBST(UNIX98)
 AC_SUBST(LIBS)
 if [[ -e /dev/pts ]]; then
-  if [[ `uname` != "SunOS" ]]; then
+  if [[ ! `echo "$target_os"|grep -i solaris` ]]; then
     UNIX98="#define UNIX98"
     LIBS="$LIBS -lutil"
   fi
