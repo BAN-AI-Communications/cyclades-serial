@@ -20,6 +20,7 @@
 #include "../inc/port_speed.h"
 #include <signal.h>
 #include <syslog.h>
+#include <errno.h>
 
 #define MAX_PORTS 32
 
@@ -249,8 +250,10 @@ tcsetattr(int fd, int optional_actions, const struct termios *termios_p)
 	return real_tcsetattr(fd, optional_actions, termios_p);
     if (tcgetattr(fd, &term))
 	return -1;
-    if (!memcmp(&term, termios_p, sizeof(struct termios)))
+    if (!memcmp(&term, termios_p, sizeof(struct termios))) {
+	errno = 0;
 	return 0;
+    }
 
     if ((term.c_cflag & HUPCL) != (termios_p->c_cflag & HUPCL)) {
 	term.c_cflag &= !HUPCL;
@@ -372,8 +375,11 @@ tcsetattr(int fd, int optional_actions, const struct termios *termios_p)
     }
     if (a_success)
 	real_tcsetattr(fd, optional_actions, &term);
-    if (a_success || !a_fail)
+    if (a_success || !a_fail) {
+	errno = 0;
 	return 0;
+    }
+    errno = EINVAL;
     return -1;
 }
 
@@ -381,7 +387,14 @@ int
 tcsendbreak(int fd, int duration)
 {
     int ind = get_device_ind(fd);
+    int ret;
     if (ind == -1)
 	return real_tcsendbreak(fd, duration);
-    return send_data(ind, eSEND_BREAK, duration, duration % 4 + 1);
+
+    ret = send_data(ind, eSEND_BREAK, duration, duration % 4 + 1);
+    if (ret)
+	errno = EINVAL;
+    else
+	errno = 0;
+    return ret;
 }
