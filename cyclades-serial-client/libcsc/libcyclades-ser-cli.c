@@ -26,7 +26,11 @@
 
 #define MAX_PORTS 32
 
+#ifdef sun
+typedef int request_t;
+#else
 typedef unsigned long int request_t;
+#endif
 
 static void *libc = NULL;
 static int (*real_tcsetattr) (int fd, int optional_actions,
@@ -406,7 +410,7 @@ tcsendbreak(int fd, int duration)
 }
 
 int
-ioctl(int fd, int request, ...)
+ioctl(int fd, request_t request, ...)
 {
     va_list args;
     void *argp;
