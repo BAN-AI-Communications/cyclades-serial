@@ -33,7 +33,8 @@ static int socket_ind = -1;
 
 void libcsc_init()
 {
-  FILE *fp;
+  FILE *fp = NULL;
+  char *cyclades_env = NULL;
 
   libc = dlopen(LIBC, RTLD_LAZY | RTLD_GLOBAL);
   if(!libc)
@@ -45,7 +46,25 @@ void libcsc_init()
   real_tcsendbreak = (int (*)(int, int))dlsym(libc, "tcsendbreak");
 
   num_devices = 0;
-  fp = fopen("/etc/cyclades-devices", "r");
+  cyclades_env = getenv("CYCLADES_DEVICES");
+  if (cyclades_env)
+  {
+    char *next;
+    while(num_devices < MAX_PORTS && cyclades_env && *cyclades_env)
+    {
+      next = strchr(cyclades_env, ':');
+      if (next) {
+	*next = '\0';
+	next++;
+      }
+      cyclades_devices[num_devices] = strdup(cyclades_env);
+      num_devices++;
+      cyclades_env = next;
+    }
+  } 
+  else 
+    fp = fopen("/etc/cyclades-devices", "r");
+
   if(fp)
   {
     char str[1024];
