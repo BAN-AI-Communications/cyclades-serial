@@ -1,3 +1,14 @@
+cyclades-serial-client (0.93) unstable; urgency=low
+
+  * Fetching devices from environment variable CYCLADES_DEVICES, if
+    defined, instead from /etc/cyclades-devices.
+
+  * Support for logging to external file.
+
+  * Negioating telnet binary mode
+
+ -- Peter Astrand <astrand@lysator.liu.se> Wed, 14 Jan 2004 19:24:22 +0100
+
 cyclades-serial-client (0.92) unstable; urgency=low
 
   * Fixed some Solaris bugs.
