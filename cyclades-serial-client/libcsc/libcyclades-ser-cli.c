@@ -406,7 +406,7 @@ tcsendbreak(int fd, int duration)
 }
 
 int
-ioctl(int fd, request_t request, ...)
+ioctl(int fd, int request, ...)
 {
     va_list args;
     void *argp;
