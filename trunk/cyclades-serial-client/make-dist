@@ -1,0 +1,36 @@
+#!/bin/sh -x
+#
+# Quick-n-dirty hack to make a release tarball
+#
+
+make distclean
+find . -name '*~' -exec rm \{\} \;
+
+VERSION=`cat configure.in  | grep ^version | cut -d = -f 2`
+# Get rid of quotes
+VERSION=`eval echo ${VERSION}`
+PWD=`pwd`
+SRCDIR=`basename ${PWD}`
+
+
+cd ..
+TOPDIR=`pwd`
+rm -f ${TOPDIR}/cyclades-serial-client-${VERSION}.tgz
+
+# Clean /tmp
+rm -rf /tmp/cyclades-serial-client-${VERSION}
+
+
+# Copy files to /tmp
+cp -a ${SRCDIR} /tmp/cyclades-serial-client-${VERSION}
+
+cd /tmp
+DISTFILES=`find cyclades-serial-client-${VERSION} \
+ -not -path '*CVS*' -and \
+ -not -name .cvsignore -and \
+ -not -path .\ -and \
+ -not -path '*/misc/*' \
+ -type f`
+
+
+tar zcvf ${TOPDIR}/cyclades-serial-client-${VERSION}.tgz ${DISTFILES}
