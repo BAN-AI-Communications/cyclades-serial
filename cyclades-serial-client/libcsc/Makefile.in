@@ -1,7 +1,7 @@
 
 CC=@CC@
 CCFLAGS=@CCFLAGS@ @SOCFLAGS@
-SOLFLAGS=@SOLFLAGS@ @LIBS@
+SOLFLAGS=@SOLFLAGS@ @LDFLAGS@ @LIBS@
 
 all: libcyclades-ser-cli.so
 
