@@ -112,12 +112,21 @@ sysmessage(int type, const char * const format, ...)
 	va_list args;
 	const char *	pritext;
 	int 	priority;
+	static FILE *fp = NULL;
+
+	if (LogFile && !fp) {
+	    fp = fopen(LogFile, "w");
+	    if (!fp) {
+		fprintf(stderr, "%s: Failed to open %s. Exiting.\n", Pgname, LogFile);
+		exit(1);
+	    }
+	}
 
 	va_start(args, format);
 
 	vsprintf(buf, format, args);
 
-	if (Console) {
+	if (Console || LogFile) {
 		switch (type) {
 		case MSG_DEBUG:
 			pritext = "DEBUG";
@@ -136,7 +145,17 @@ sysmessage(int type, const char * const format, ...)
 			pritext = "ERR";
 			break;
 		}
-		fprintf (stderr, "%s: %s: %s", Idmsg, pritext, buf);
+		if (Console)
+		    fprintf (stderr, "%s: %s: %s", Idmsg, pritext, buf);
+		else {
+		    fprintf (fp, "%s: %s: %s", Idmsg, pritext, buf);
+		    fflush(fp);
+		    if (ftell(fp) > MAX_LOG_FILE_SIZE) {
+			fclose(fp);
+			fp = NULL;
+		    }
+		}
+
 	} else {
 		switch (type) {
 		case MSG_DEBUG:

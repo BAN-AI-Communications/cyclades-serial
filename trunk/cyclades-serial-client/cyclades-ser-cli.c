@@ -90,11 +90,12 @@ int main (int argc, char **argv)
 
 	Console = FALSE;
 	Foreground = FALSE;
+	LogFile = NULL;
 
 	Pgname = argv[0];
 	Debug = 0;
 
-	while ((opt = getopt(argc,argv, "u:n:r:fi:st:m:c:p:d:xvhH")) != EOF) {
+	while ((opt = getopt(argc,argv, "u:n:r:fi:st:m:c:p:d:xvhHl:")) != EOF) {
 		switch (opt) {
 		case 'u' :
 			ptyiosize = atoi(optarg);
@@ -141,6 +142,9 @@ int main (int argc, char **argv)
 		case 'v' :
 			printf("%s\n", Version);
 			exit (E_NORMAL);
+		case 'l' :
+			LogFile = strdup(optarg);
+			break;
 		case 'h':
 		case 'H':
 		default :
@@ -271,6 +275,7 @@ helpmsg (void)
 	fprintf(stderr, "\t\t[-r numretries] [-t devtype]   [-s servertype]\n");
 	fprintf(stderr, "\t\t[-m devmodem]   [-c closemode] [-p startport]\n");
 	fprintf(stderr, "\t\t[-d deblevel]\n");
+	fprintf(stderr, "\t\t[-l logfile]\n");
 }
 
 

@@ -74,6 +74,7 @@
 # define MSG_NOTICE	2
 # define MSG_WARNING	3
 # define MSG_ERR	4
+# define MAX_LOG_FILE_SIZE (10*1024)
 
 
 /* Miscelaneous */
@@ -111,5 +112,6 @@ EXTERN char *			Pgname;
 EXTERN int 			Debug;
 EXTERN int 			Console;
 EXTERN int 			Foreground;
+EXTERN char * 			LogFile;
 
 # undef EXTERN
