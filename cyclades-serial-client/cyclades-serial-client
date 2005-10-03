@@ -112,9 +112,9 @@ do
 	esac
 
 if [ `uname` = "Linux" ]; then
-	ppid=`ps ax | grep tsrsock | grep "${devc} " | awk '{print $1}'`
+	ppid=`ps ax | grep cyclades-ser-cli | grep "${devc} " | awk '{print $1}'`
 else
-	ppid=`ps -ef | grep tsrsock | grep "${devc} " | awk '{print $2}'`
+	ppid=`ps -ef | grep cyclades-ser-cli | grep "${devc} " | awk '{print $2}'`
 fi
 
 	case ${OPTION} in
@@ -125,7 +125,7 @@ fi
 			continue
 		fi
 		echo "Starting ${devc} <<==>> ${host}:${port} interface"
-		tsrsock ${opts} ${devc} ${host} ${port}
+		cyclades-ser-cli ${opts} ${devc} ${host} ${port}
 		sleep 1
 		;;
 	"stop")
@@ -142,7 +142,7 @@ fi
 		then
 			echo "cyclades-serial-client : ${devc} is inactive"
 			echo "Starting ${devc} <<==>> ${host}:${port} interface"
-			tsrsock ${opts} ${devc} ${host} ${port}
+			cyclades-ser-cli ${opts} ${devc} ${host} ${port}
 			sleep 1
 		else
 			echo \
