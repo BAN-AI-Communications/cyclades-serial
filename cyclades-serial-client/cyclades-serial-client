@@ -103,6 +103,14 @@ do
 		fi
 		opts="-s $opts"
 		;;
+	rfc2217) 
+		devst="${devc} (rfc2217 at ${host}:${port})"
+		case ${serv} in
+		opengear|cm400?|cm41??)
+			opts="-p 5000 $opts"
+			;;
+		esac
+		;;
 	*)
 		echo "tsrport : Bad device table line"
 		BACKEXIT=2
