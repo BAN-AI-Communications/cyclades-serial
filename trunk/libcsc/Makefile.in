@@ -8,7 +8,7 @@ all: libcyclades-ser-cli.so
 
 libcyclades-ser-cli.so: libcyclades-ser-cli.c
 	$(CC) -c $(CCFLAGS) libcyclades-ser-cli.c -o libcyclades-ser-cli.o
-	ld libcyclades-ser-cli.o $(SOLFLAGS) -o libcyclades-ser-cli.so
+	$(CC) libcyclades-ser-cli.o $(SOLFLAGS) -o libcyclades-ser-cli.so
 
 clean:
 	rm -f libcyclades-ser-cli.so libcyclades-ser-cli.o depends.bak
