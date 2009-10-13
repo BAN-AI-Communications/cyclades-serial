@@ -60,7 +60,7 @@ if [[ `echo "$target_os"|grep -i linux` ]]; then
   OFLAGS="-DUSE_TERMIO -DUSE_TERMIOS -DUSE_POSIX_NONBLOCK"
   CCFLAGS="-O2 -Wall -W -Wshadow -Wpointer-arith -Wwrite-strings -pedantic"
   SOCFLAGS="-shared -fpic"
-  SOLFLAGS="-shared -init libcsc_init -fini libcsc_fini -fpic -ldl"
+  SOLFLAGS="-shared -Wl,-init -Wl,libcsc_init -Wl,-fini -Wl,libcsc_fini -fpic -ldl"
   DEV_OBJ=linux-dev.o
 else
   if [[ `echo "$target_os"|grep -i aix` ]]; then
@@ -84,13 +84,14 @@ else
           DEV_OBJ=solaris-dev.o
           OFLAGS="-DUSE_TERMIO -DUSE_TERMIOS -DUSE_POSIX_NONBLOCK"
           LIBS="-lsocket -lnsl"
-          SOLFLAGS="$stripping -r -zinitarray=libcsc_init -zfiniarray=libcsc_fini -lc"
           if [[ "$CC" = "gcc" -o "$CC" = "${target}-gcc" ]]; then
             CCFLAGS="-O2 -Wall -W -Wshadow -Wpointer-arith -Wwrite-strings -pedantic"
             SOCFLAGS="-shared -fpic"
+            SOLFLAGS="-shared -Wl,-init -Wl,libcsc_init -Wl,-fini -Wl,libcsc_fini -fpic"
           else
             CCFLAGS="-O"
             SOCFLAGS="-Kpic"
+            SOLFLAGS="$stripping -Wl,-r -Wl,-zinitarray=libcsc_init -Wl,-zfiniarray=libcsc_fini -lc"
           fi
         else
 #HPUX - never tested
