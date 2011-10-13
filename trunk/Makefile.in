@@ -33,6 +33,7 @@ LDFLAGS=-s @LDFLAGS@
 # Standard libraries
 #
 LDLIBS=@LIBS@
+AUXLIBS=@AUXLIBS@
 
 #
 # Object files
