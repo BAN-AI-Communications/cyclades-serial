@@ -109,7 +109,6 @@ AC_SUBST(LIBS)
 if [[ -e /dev/pts ]]; then
   if [[ ! `echo "$target_os"|grep -i solaris` ]]; then
     UNIX98="#define UNIX98"
-    LIBS="$LIBS -lutil"
   fi
 fi
 
