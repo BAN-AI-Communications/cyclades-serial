@@ -18,21 +18,21 @@
 # define EXTERN extern
 # endif
 
-EXTERN void			start_measure(void);
-EXTERN void			cpu_measure(int all);
+EXTERN void                     start_measure(void);
+EXTERN void                     cpu_measure(int all);
 
-EXTERN int			devreads;
-EXTERN int			devnreads;
-EXTERN int			devwrites;
-EXTERN int			devnwrites;
-EXTERN int			netreads;
-EXTERN int			netnreads;
-EXTERN int			netwrites;
-EXTERN int			netnwrites;
-EXTERN int			devrbytes;
-EXTERN int			devwbytes;
-EXTERN int			netrbytes;
-EXTERN int			netwbytes;
-EXTERN int			ioscheds;
+EXTERN int devreads;
+EXTERN int devnreads;
+EXTERN int devwrites;
+EXTERN int devnwrites;
+EXTERN int netreads;
+EXTERN int netnreads;
+EXTERN int netwrites;
+EXTERN int netnwrites;
+EXTERN int devrbytes;
+EXTERN int devwbytes;
+EXTERN int netrbytes;
+EXTERN int netwbytes;
+EXTERN int ioscheds;
 
 # undef EXTERN

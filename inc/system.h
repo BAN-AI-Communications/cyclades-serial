@@ -18,14 +18,14 @@
 # define EXTERN extern
 # endif
 
-EXTERN void			mindelay(void);
-EXTERN void			sysdelay(int msecs);
-EXTERN void			sysmessage(int type, const char * const format, ...);
-EXTERN void			doexit(int val);
-EXTERN void			init_system(void);
-EXTERN unsigned char *		mem_get(int size);
-EXTERN void			mem_free(void * ptr);
+EXTERN void                     mindelay(void);
+EXTERN void                     sysdelay(int msecs);
+EXTERN void                     sysmessage(int type, const char * const format, ...);
+EXTERN void                     doexit(int val);
+EXTERN void                     init_system(void);
+EXTERN unsigned char *          mem_get(int size);
+EXTERN void                     mem_free(void * ptr);
 
-EXTERN char			Idmsg[128];
+EXTERN char Idmsg[128];
 
 # undef EXTERN

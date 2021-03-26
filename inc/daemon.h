@@ -36,14 +36,14 @@ static char sccsid[] = "@(#)daemon.c	8.1 (Berkeley) 6/4/93";
 #include <sys/stat.h>
 
 static int
-daemon(nochdir, noclose)
-	int nochdir, noclose;
+	daemon(nochdir, noclose)
+int nochdir, noclose;
 {
 	int fd;
 
 	switch (fork()) {
 	case -1:
-		return (-1);
+		return -1;
 	case 0:
 		break;
 	default:
@@ -51,7 +51,7 @@ daemon(nochdir, noclose)
 	}
 
 	if (setsid() == -1)
-		return (-1);
+		return -1;
 
 	if (!nochdir)
 		(void)chdir("/");
@@ -59,21 +59,21 @@ daemon(nochdir, noclose)
 	if (!noclose && (fd = open("/dev/null", O_RDWR, 0)) != -1) {
 		struct stat st;
 
-		if ((fstat (fd, &st), 0) == 0
-		    && S_ISCHR (st.st_mode) != 0
+		if ((fstat(fd, &st), 0) == 0
+		    && S_ISCHR(st.st_mode) != 0
 #if defined DEV_NULL_MAJOR && defined DEV_NULL_MINOR
-		    && st.st_rdev == makedev (DEV_NULL_MAJOR, DEV_NULL_MINOR)
+		    && st.st_rdev == makedev(DEV_NULL_MAJOR, DEV_NULL_MINOR)
 #endif
 		    ) {
 			(void)dup2(fd, STDIN_FILENO);
 			(void)dup2(fd, STDOUT_FILENO);
 			(void)dup2(fd, STDERR_FILENO);
 			if (fd > 2)
-				(void)close (fd);
+				(void)close(fd);
 		} else {
-			(void)close (fd);
+			(void)close(fd);
 			return -1;
 		}
 	}
-	return (0);
+	return 0;
 }
