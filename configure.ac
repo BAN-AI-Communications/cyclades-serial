@@ -114,4 +114,4 @@ if [[ -e /dev/pts ]]; then
   fi
 fi
 
-AC_OUTPUT(Makefile libcsc/Makefile inc/misc.h cyclades-serial-client.spec sun/pkginfo)
+AC_OUTPUT(Makefile libcsc/Makefile inc/misc.h)
