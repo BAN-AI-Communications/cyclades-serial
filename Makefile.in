@@ -66,7 +66,7 @@ distclean: clean
 	rm -f config.log
 	rm -f Makefile
 	rm -f autom4te.cache/*
-	rmdir -f autom4te.cache
+	rmdir autom4te.cache
 
 cyclades-ser-cli: $(SOCKOBJS)
 	$(CC) $(LDFLAGS) -o cyclades-ser-cli $(SOCKOBJS) $(AUXLIBS) $(LDLIBS)
