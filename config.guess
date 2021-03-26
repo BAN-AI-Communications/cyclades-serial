@@ -871,7 +871,7 @@ EOF
 	  EV67)  UNAME_MACHINE=alphaev67 ;;
 	  EV68*) UNAME_MACHINE=alphaev68 ;;
         esac
-	objdump --private-headers /bin/sh | grep ld.so.1 >/dev/null
+	objdump --private-headers $(command -v sh) | grep ld.so.1 >/dev/null
 	if test "$?" = 0 ; then LIBC="libc1" ; else LIBC="" ; fi
 	echo ${UNAME_MACHINE}-unknown-linux-gnu${LIBC}
 	exit 0 ;;
