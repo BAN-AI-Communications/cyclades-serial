@@ -654,7 +654,7 @@ get_slave_controlling(dev_t device)
     char dummybuf[512];
     int dummyint;
     int tty;
-    gid_t tpgid;
+    gid_t tpgid = 0;
 
     if ((dip = opendir("/proc")) == (DIR *) 0) {
 	sysmessage(MSG_ERR, "Can't open /proc: %s", strerror(errno));
