@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 # chkconfig: 235 55 45
 # description:
 # description: cyclades-serial-client script controls the interfaces of \
