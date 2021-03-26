@@ -200,6 +200,8 @@ sock_read(unsigned char *buf, int n)
 	tot = 0;
 	rcnt = 0;
 
+	(void)rcnt;
+
 	do {
 		if ((ret = recv(S_fd, buf, n, 0)) > 0) {
 			tot += ret;

@@ -48,7 +48,7 @@ if [[ -n "$daemon" ]]; then
 fi
 
 AC_SUBST(LIBC)
-LIBC=l`ldd /bin/ls | grep libc | head -1 | cut -f2 -dl | cut -f1 "-d "`
+LIBC=l$(ldd $(command -v ls) | grep libc | head -1 | cut -f2 -dl | cut -f1 "-d ")
 
 AC_SUBST(OFLAGS)
 AC_SUBST(CCFLAGS)
@@ -58,9 +58,9 @@ AC_SUBST(SOCFLAGS)
 
 if [[ `echo "$target_os"|grep -i linux` ]]; then
   OFLAGS="-DUSE_TERMIO -DUSE_TERMIOS -DUSE_POSIX_NONBLOCK"
-  CCFLAGS="-O2 -Wall -W -Wshadow -Wpointer-arith -Wwrite-strings -pedantic -fcommon"
-  SOCFLAGS="-shared -fpic"
-  SOLFLAGS="-shared -Wl,-init -Wl,libcsc_init -Wl,-fini -Wl,libcsc_fini -fpic -ldl"
+  CCFLAGS="-O2 -W -Wall -Wextra -Wno-address -Wno-unused-value -Wno-unused-function -Wshadow -Wpointer-arith -Wwrite-strings -Wno-nonnull -Wno-multistatement-macros -fcommon"
+  SOCFLAGS="-shared -fPIC -fpic"
+  SOLFLAGS="-shared -Wl,-init -Wl,libcsc_init -Wl,-fini -Wl,libcsc_fini -fPIC -fpic -ldl"
   DEV_OBJ=linux-dev.o
 else
   if [[ `echo "$target_os"|grep -i aix` ]]; then

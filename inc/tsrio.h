@@ -16,6 +16,8 @@
  * Simple buffer managment (for delayed writes and/or on NONBLOCK devices)
  */
 
+#include <stdlib.h>
+
 struct buffer {
 	unsigned char *         b_base;                 /* Area               */
 	unsigned char *         b_ins;                  /* Insert data ptr */
@@ -295,6 +297,11 @@ struct event Evhead;
 		struct event *evp; \
 		void *memptr; \
 		int XXi; \
+		if (evparam == NULL) { \
+			sysmessage(MSG_ERR, "%s: ev param or size is NULL", \
+					Idmsg); \
+			exit(1); \
+		} \
 		for (XXi = 0, evp = &Eventpoll[0]; XXi < MAX_EVENTS; XXi++, evp++) { \
 			if (evp->ev_type == EV_NONE) { \
 				break; \

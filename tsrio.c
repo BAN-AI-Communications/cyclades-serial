@@ -901,6 +901,7 @@ do_ptydata()
     case PTY_OPERRONLY:
     case PTY_WAITNVTWR:
 	if ((ret = dev_putdata(bp)) == 0) {
+		ret = ret;
 	    if (bp->b_hold != 0) {
 		switch (Pty.state) {
 		case PTY_OPER:
@@ -1341,6 +1342,7 @@ do_nvtdata(void)
     case NVT_OPER:
     case NVT_WAITPTYWR:
 	if ((ret = tel_putdata(bp)) == 0) {
+		ret = ret;
 	    if (bp->b_hold != 0) {
 		if (Nvt.state == NVT_OPER) {
 		    NVT_SETSTATE("do_nvtdata", NVT_WAITRASWR);
@@ -1545,7 +1547,10 @@ tsr_states(const char *const unused)
 {
     const char *pstate, *psubstate;
     const char *nstate, *nsubstate;
+	char *unusedx;
 
+	unusedx = (char *)unused;
+	unusedx = unusedx;
     pstate = Pty_states[Pty.state].stname;
 
     if (Pty_states[Pty.state].subnames) {
