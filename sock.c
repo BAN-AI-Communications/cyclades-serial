@@ -197,7 +197,8 @@ sock_read(unsigned char *buf, int n)
 	int tot;
 	int rcnt;
 
-	tot = rcnt = 0;
+	tot = 0;
+	rcnt = 0;
 
 	do {
 		if ((ret = recv(S_fd, buf, n, 0)) > 0) {

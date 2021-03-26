@@ -293,7 +293,7 @@ struct event Evhead;
 # define SET_EVENT(evtype, evcode, evparam, evsize) \
 	{ \
 		struct event *evp; \
-		void *  memptr; \
+		void *memptr; \
 		int XXi; \
 		for (XXi = 0, evp = &Eventpoll[0]; XXi < MAX_EVENTS; XXi++, evp++) { \
 			if (evp->ev_type == EV_NONE) { \
@@ -310,6 +310,12 @@ struct event Evhead;
 				    == (void *)0) { \
 					sysmessage(MSG_ERR, \
 						   "%s: No memory", Idmsg); \
+					exit(1); \
+				} \
+				if (memptr == NULL) { \
+					sysmessage(MSG_ERR, \
+							"%s: No memory", Idmsg); \
+					exit(1); \
 				} \
 				memcpy(memptr, evparam, evsize); \
 				evp->ev_param = (void *)memptr; \
