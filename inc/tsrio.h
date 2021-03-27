@@ -298,7 +298,7 @@ struct event Evhead;
 		void *memptr; \
 		int XXi; \
 		if (evparam == NULL) { \
-			sysmessage(MSG_ERR, "%s: ev param or size is NULL", \
+			sysmessage(MSG_ERR, "%s: Invalid null parameter", \
 					Idmsg); \
 			exit(1); \
 		} \
